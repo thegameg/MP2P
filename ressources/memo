@@ -1,6 +1,0 @@
-# Protocol
-* When a Storage server is "permanently" removed (or it's data erased), we must remove the database entry in the masters, and replicate the parts that were stored on that server to some other servers.
-* Client upload when Storage is down?
-
-# General
-* Doxygen - Doxyfile

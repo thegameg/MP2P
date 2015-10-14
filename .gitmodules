@@ -1,0 +1,3 @@
+[submodule "src/master/libcouchbase-cxx"]
+	path = src/master/libcouchbase-cxx
+	url = https://github.com/couchbaselabs/libcouchbase-cxx.git

@@ -1,3 +1,0 @@
-killall storage-release
-cd /home/mp2p/MP2P/build
-nohup ./storage-release &>>output &

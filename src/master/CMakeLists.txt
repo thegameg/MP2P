@@ -2,7 +2,7 @@
 add_executable(master-debug ${MASTERSOURCES})
 add_dependencies(debug master-debug)
 target_link_libraries(master-debug LINK_PUBLIC libtools-debug couchbase)
-target_include_directories(master-debug PUBLIC .)
+target_include_directories(master-debug PUBLIC libcouchbase-cxx/include .)
 set_target_properties(master-debug PROPERTIES COMPILE_FLAGS ${DEBUG_FLAGS})
 
 #The release target

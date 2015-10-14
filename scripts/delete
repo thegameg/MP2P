@@ -1,2 +1,0 @@
-killall server
-rm -rf ../home/mp2p/MP2P
