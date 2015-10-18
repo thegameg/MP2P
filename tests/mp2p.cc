@@ -1,35 +1,26 @@
-#define CATCH_CONFIG_MAIN
+#include <catch.hpp>
 
-#include "../catch.hh"
+#include <mp2p/misc/shared-buffer.hh>
+#include <mp2p/files/file.hh>
+#include <mp2p/network/all.hh>
 
-#include "../../libtools/utils/shared-buffer.hh"
-#include "../../libtools/files/files.hh"
-#include "../../libtools/network/network.hh"
-#include <fstream>
-#include <cstdio>
-#include <memory>
-#include <vector>
-#include <fcntl.h>
-#include <cstring>
-#include <ctime>
-
-using copy = utils::shared_buffer::copy;
+using copy = misc::shared_buffer::copy;
 
 TEST_CASE("Shared-buffer", "[libtools][shared-buffer]")
 {
-  using namespace utils;
+  using namespace misc;
   SECTION("Construction")
   {
     SECTION("Size")
     {
-      REQUIRE_NOTHROW(utils::shared_buffer{0});
-      REQUIRE_NOTHROW(utils::shared_buffer{9});
+      REQUIRE_NOTHROW(misc::shared_buffer{0});
+      REQUIRE_NOTHROW(misc::shared_buffer{9});
     }
 
     SECTION("Move container")
     {
       std::vector<char> vector;
-      REQUIRE_NOTHROW(utils::shared_buffer{std::move(vector)});
+      REQUIRE_NOTHROW(misc::shared_buffer{std::move(vector)});
     }
 
     SECTION("POD with copy")
@@ -38,7 +29,7 @@ TEST_CASE("Shared-buffer", "[libtools][shared-buffer]")
       size_t size = 4;
       shared_buffer::copy to_copy = copy::Yes;
 
-      utils::shared_buffer buffer(text, size, to_copy);
+      misc::shared_buffer buffer(text, size, to_copy);
       REQUIRE(buffer.size() == size);
 
       for (size_t i = 0; i < size; ++i)
@@ -54,7 +45,7 @@ TEST_CASE("Shared-buffer", "[libtools][shared-buffer]")
       size_t size = 4;
       shared_buffer::copy to_copy = copy::No;
 
-      utils::shared_buffer buffer(text, size, to_copy);
+      misc::shared_buffer buffer(text, size, to_copy);
       REQUIRE(buffer.data() == text);
       REQUIRE(buffer.size() == size);
     }
@@ -62,16 +53,16 @@ TEST_CASE("Shared-buffer", "[libtools][shared-buffer]")
 
   SECTION("Size")
   {
-    utils::shared_buffer number{42};
+    misc::shared_buffer number{42};
     REQUIRE(number.size() == 42);
 
     auto vector_ptr =
-      std::make_shared<utils::shared_buffer::container_type>(42, 'A');
-    utils::shared_buffer shared{42};
+      std::make_shared<misc::shared_buffer::container_type>(42, 'A');
+    misc::shared_buffer shared{42};
     REQUIRE(shared.size() == 42);
 
     std::vector<char> vector{42, 'A'};
-    utils::shared_buffer moved{42};
+    misc::shared_buffer moved{42};
     REQUIRE(moved.size() == 42);
   }
 
@@ -81,7 +72,7 @@ TEST_CASE("Shared-buffer", "[libtools][shared-buffer]")
     size_t size = 4;
     shared_buffer::copy to_copy = copy::Yes;
 
-    utils::shared_buffer buffer(text, size, to_copy);
+    misc::shared_buffer buffer(text, size, to_copy);
     REQUIRE(buffer.string_get() == "MP2P");
   }
 }

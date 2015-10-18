@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mp2p/file/file.hh>
+#include <mp2p/files/file.hh>
 
 #include <boost/filesystem.hpp>
 

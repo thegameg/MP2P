@@ -1,12 +1,12 @@
-#include "files.hh"
+#include <mp2p/files/file.hh>
+
+#include <boost/filesystem.hpp>
+#include <openssl/sha.h>
 
 #include <iomanip>
 #include <sstream>
 #include <cmath>
 #include <array>
-
-#include <boost/filesystem.hpp>
-#include <openssl/sha.h>
 
 // Apple deprecated OpenSSL and provides its own
 // library called CommonCrypto. Use it to avoid warnings on
