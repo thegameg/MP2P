@@ -47,8 +47,7 @@ namespace misc
     return std::string(data(), data() + size());
   }
 
-  inline shared_buffer::operator
-  boost::asio::const_buffer() const
+  inline shared_buffer::operator boost::asio::const_buffer() const
   {
     return boost::asio::const_buffer(pimpl_->buf_);
   }

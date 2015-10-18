@@ -19,18 +19,17 @@ namespace network
     // The dispatcher is called when a packet is transferred.
     // The delete_handler is removing the actual session
     // from the container containing it.
-    Session(boost::asio::ip::tcp::socket&& socket,
-            dispatcher_type dispatcher,
+    Session(boost::asio::ip::tcp::socket&& socket, dispatcher_type dispatcher,
             size_t id = unique_id());
 
     // Same with the previous one.
     // The socket parameters are explicitly speciied
-    Session(boost::asio::io_service& io_service,
-            const std::string& host,
-            uint16_t port,
-            dispatcher_type dispatcher
-              = [](Packet, Session&)
-              { return keep_alive::No; },
+    Session(boost::asio::io_service& io_service, const std::string& host,
+            uint16_t port, dispatcher_type dispatcher =
+                             [](Packet, Session&)
+                           {
+                             return keep_alive::No;
+                           },
             size_t id = unique_id());
 
     // Used for debug
@@ -64,7 +63,7 @@ namespace network
 
     // The array containing the header of the packet
     // FIXME : Why is it part of the session ?
-    std::array<char, sizeof (masks::PACKET_HEADER)> buff_;
+    std::array<char, sizeof(masks::PACKET_HEADER)> buff_;
 
     // The dispatcher to call right after a complete recieve
     dispatcher_type dispatcher_;
@@ -75,14 +74,13 @@ namespace network
 
   // Recieve the header, then call the callback with a packet
   // and a message size
-  void receive_header(std::shared_ptr<Session> s,
-                      std::function<void(const Packet&,
-                                         dispatcher_type)> receive_body,
-                      dispatcher_type callback);
+  void receive_header(
+    std::shared_ptr<Session> s,
+    std::function<void(const Packet&, dispatcher_type)> receive_body,
+    dispatcher_type callback);
 
   // Recieve the message according to the packet
-  void receive_message(std::shared_ptr<Session> s,
-                       const Packet& p,
+  void receive_message(std::shared_ptr<Session> s, const Packet& p,
                        dispatcher_type dispatcher);
 
   // Recieve a header, then the data according to the header

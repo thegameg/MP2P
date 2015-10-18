@@ -7,12 +7,14 @@ namespace misc
   class Logger
   {
   public:
-    static auto& cout()
+    static auto&
+    cout()
     {
       return std::cout;
     }
 
-    static auto& cerr()
+    static auto&
+    cerr()
     {
       return std::cerr;
     }

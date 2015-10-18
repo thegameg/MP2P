@@ -11,10 +11,8 @@ namespace network
   public:
     // Create a server binding addr:port using io_service.
     // Callback dispatcher after a recieve
-    Server(boost::asio::ip::address_v6 addr,
-           uint16_t port,
-           boost::asio::io_service& io_service,
-           dispatcher_type dispatcher);
+    Server(boost::asio::ip::address_v6 addr, uint16_t port,
+           boost::asio::io_service& io_service, dispatcher_type dispatcher);
 
     // Stop the acceptor
     // FIXME : Is this really necessary? What about RAII?

@@ -7,37 +7,44 @@
 namespace network
 {
   template <typename... Ts>
-  std::shared_ptr<Session> Session::create(Ts&&... params)
+  std::shared_ptr<Session>
+  Session::create(Ts&&... params)
   {
     return std::make_shared<Session>(std::forward<Ts>(params)...);
   }
 
-  inline std::shared_ptr<Session> Session::ptr()
+  inline std::shared_ptr<Session>
+  Session::ptr()
   {
     return shared_from_this();
   }
 
-  inline boost::asio::ip::tcp::socket& Session::socket_get()
+  inline boost::asio::ip::tcp::socket&
+  Session::socket_get()
   {
     return socket_;
   }
 
-  inline boost::asio::ip::address Session::remote_address_get() const
+  inline boost::asio::ip::address
+  Session::remote_address_get() const
   {
     return socket_.remote_endpoint().address();
   }
 
-  inline std::array<char, sizeof (masks::PACKET_HEADER)>& Session::buff_get()
+  inline std::array<char, sizeof(masks::PACKET_HEADER)>&
+  Session::buff_get()
   {
     return buff_;
   }
 
-  inline dispatcher_type Session::dispatcher_get() const
+  inline dispatcher_type
+  Session::dispatcher_get() const
   {
     return dispatcher_;
   }
 
-  inline size_t Session::id_get() const
+  inline size_t
+  Session::id_get() const
   {
     return id_;
   }

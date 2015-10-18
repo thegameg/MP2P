@@ -67,7 +67,8 @@ namespace misc
     using super_type = shared_buffer_impl;
 
     weak_impl(const super_type::CharT* data, size_t size)
-      : super_type{boost::asio::mutable_buffer(const_cast<super_type::CharT*>(data), size)}
+      : super_type{boost::asio::mutable_buffer(
+          const_cast<super_type::CharT*>(data), size)}
     {
     }
   };

@@ -6,7 +6,8 @@
 
 namespace misc
 {
-  void check_system()
+  void
+  check_system()
   {
     int sock = ::socket(PF_INET6, SOCK_STREAM, 0);
 
