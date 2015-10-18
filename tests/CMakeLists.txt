@@ -10,3 +10,7 @@ add_executable(tests ${tests_src})
 target_link_libraries(tests
   mp2p
 )
+
+# Provide a `check` target to launch the unit tests
+add_custom_target(check ${PROJECT_BINARY_DIR}/tests/tests)
+add_dependencies(check tests)
