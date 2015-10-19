@@ -2,7 +2,7 @@
 
 namespace master
 {
-  using copy = utils::shared_buffer::copy;
+  using copy = utils::SharedBuffer::copy;
   using namespace network;
 
   // May I upload a file?

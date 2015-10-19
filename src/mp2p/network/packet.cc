@@ -8,7 +8,7 @@ namespace network
   using namespace boost::asio;
   using namespace network::masks;
 
-  using copy = misc::shared_buffer::copy;
+  using copy = misc::SharedBuffer::copy;
 
   Packet::Packet(size_type size, fromto_type fromto, what_type what,
                  const CharT* data)
@@ -25,7 +25,7 @@ namespace network
   }
 
   Packet::Packet(masks::fromto_type fromto, masks::what_type what,
-                 const misc::shared_buffer& message)
+                 const misc::SharedBuffer& message)
     : header_{static_cast<size_type>(message.size()), {fromto, what}}
     , message_seq_{message}
   {

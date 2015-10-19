@@ -11,7 +11,7 @@ namespace misc
    * It should be used to be copied around and shared between multiple objects
    * and operations.
    */
-  class shared_buffer
+  class SharedBuffer
   {
   public:
     // Keep it different from network::masks::CharT.
@@ -29,22 +29,22 @@ namespace misc
     };
 
     // Construct an empty buffer
-    explicit shared_buffer(size_t size);
+    explicit SharedBuffer(size_t size);
 
-    // Construct a shared_buffer from a moved container
-    explicit shared_buffer(container_type&& container);
+    // Construct a SharedBuffer from a moved container
+    explicit SharedBuffer(container_type&& container);
 
     // Construct a buffer by copying (or not) the data from a pointer to POD
     // If your data is going to be invalidated, copy::Yes should be used.
     // If you are sure that your data is going to stay valid,
     // avoid copying using copy::No
-    explicit shared_buffer(CharT* data, size_t size, copy to_copy);
+    explicit SharedBuffer(CharT* data, size_t size, copy to_copy);
 
     // Same, but using a const buffer.
-    explicit shared_buffer(const CharT* data, size_t size, copy to_copy);
+    explicit SharedBuffer(const CharT* data, size_t size, copy to_copy);
 
     // MutableBufferSequence requirements
-    // misc::shared_buffer implements the MutableBufferSequence concept
+    // misc::SharedBuffer implements the MutableBufferSequence concept
     // required by boost::asio, in order to be used as a buffer for send/recv
     // functions.
 
@@ -76,16 +76,13 @@ namespace misc
     // for sending data.
     operator boost::asio::const_buffer() const;
 
+    struct SharedBufferImpl; // Forward declaration
+
   private:
     // Pointer to the implementation of the buffer
     // It can be a strong implementation that owns the data
     // Or a weak implementation that only uses it
-    struct shared_buffer_impl; // Forward declaration
-    std::shared_ptr<shared_buffer_impl> pimpl_;
-
-    // Forward declaration of the different types of implementation
-    friend struct owning_impl;
-    friend struct weak_impl;
+    std::shared_ptr<SharedBufferImpl> impl_;
   };
 } // namespace misc
 

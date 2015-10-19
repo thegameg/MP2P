@@ -7,7 +7,7 @@ namespace storage
 {
   using namespace network;
   using namespace network::masks;
-  using copy = utils::shared_buffer::copy;
+  using copy = utils::SharedBuffer::copy;
 
   network::keep_alive
   cs_up_act(network::Packet& packet, network::Session& session)

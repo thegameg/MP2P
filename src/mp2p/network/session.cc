@@ -10,7 +10,7 @@ namespace network
 {
   using namespace boost::asio;
   using namespace network::masks;
-  using copy = misc::shared_buffer::copy;
+  using copy = misc::SharedBuffer::copy;
 
   Session::Session(ip::tcp::socket&& socket, dispatcher_type dispatcher,
                    size_t id)

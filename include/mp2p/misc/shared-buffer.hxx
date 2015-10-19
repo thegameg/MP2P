@@ -5,50 +5,50 @@
 
 namespace misc
 {
-  inline shared_buffer::const_iterator
-  shared_buffer::begin() const
+  inline SharedBuffer::const_iterator
+  SharedBuffer::begin() const
   {
-    return &pimpl_->buf_;
+    return &impl_->buf_;
   }
 
-  inline shared_buffer::const_iterator
-  shared_buffer::end() const
+  inline SharedBuffer::const_iterator
+  SharedBuffer::end() const
   {
-    return &pimpl_->buf_ + 1;
+    return &impl_->buf_ + 1;
   }
 
-  inline shared_buffer::CharT*
-  shared_buffer::data()
+  inline SharedBuffer::CharT*
+  SharedBuffer::data()
   {
-    return boost::asio::buffer_cast<shared_buffer::CharT*>(pimpl_->buf_);
+    return boost::asio::buffer_cast<SharedBuffer::CharT*>(impl_->buf_);
   }
 
-  inline const shared_buffer::CharT*
-  shared_buffer::data() const
+  inline const SharedBuffer::CharT*
+  SharedBuffer::data() const
   {
-    return boost::asio::buffer_cast<const shared_buffer::CharT*>(pimpl_->buf_);
+    return boost::asio::buffer_cast<const SharedBuffer::CharT*>(impl_->buf_);
   }
 
-  inline const shared_buffer::value_type
-  shared_buffer::buffer_get() const
+  inline const SharedBuffer::value_type
+  SharedBuffer::buffer_get() const
   {
-    return pimpl_->buf_;
+    return impl_->buf_;
   }
 
   inline size_t
-  shared_buffer::size() const
+  SharedBuffer::size() const
   {
-    return boost::asio::buffer_size(pimpl_->buf_);
+    return boost::asio::buffer_size(impl_->buf_);
   }
 
   inline const std::string
-  shared_buffer::string_get() const
+  SharedBuffer::string_get() const
   {
     return std::string(data(), data() + size());
   }
 
-  inline shared_buffer::operator boost::asio::const_buffer() const
+  inline SharedBuffer::operator boost::asio::const_buffer() const
   {
-    return boost::asio::const_buffer(pimpl_->buf_);
+    return boost::asio::const_buffer(impl_->buf_);
   }
 } // namespace misc

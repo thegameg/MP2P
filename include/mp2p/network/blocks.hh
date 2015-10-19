@@ -31,7 +31,7 @@ namespace network
     using stid_type = uint32_t;
     using what_type = uint8_t;
 
-    using message_type = misc::shared_buffer;
+    using message_type = misc::SharedBuffer;
 
     // Composed constant size blocks
     struct ADDR

@@ -4,29 +4,29 @@
 
 namespace misc
 {
-  shared_buffer::shared_buffer(size_t size)
-    : pimpl_{std::make_shared<owning_impl>(size)}
+  SharedBuffer::SharedBuffer(size_t size)
+    : impl_{std::make_shared<OwnerImpl>(size)}
   {
   }
 
-  shared_buffer::shared_buffer(container_type&& container)
-    : pimpl_{std::make_shared<owning_impl>(std::move(container))}
+  SharedBuffer::SharedBuffer(container_type&& container)
+    : impl_{std::make_shared<OwnerImpl>(std::move(container))}
   {
   }
 
-  shared_buffer::shared_buffer(CharT* data, size_t size, copy to_copy)
+  SharedBuffer::SharedBuffer(CharT* data, size_t size, copy to_copy)
   {
     if (to_copy == copy::Yes)
-      pimpl_ = std::make_shared<owning_impl>(data, size);
+      impl_ = std::make_shared<OwnerImpl>(data, size);
     else
-      pimpl_ = std::make_shared<weak_impl>(data, size);
+      impl_ = std::make_shared<WeakImpl>(data, size);
   }
 
-  shared_buffer::shared_buffer(const CharT* data, size_t size, copy to_copy)
+  SharedBuffer::SharedBuffer(const CharT* data, size_t size, copy to_copy)
   {
     if (to_copy == copy::Yes)
-      pimpl_ = std::make_shared<owning_impl>(data, size);
+      impl_ = std::make_shared<OwnerImpl>(data, size);
     else
-      pimpl_ = std::make_shared<weak_impl>(data, size);
+      impl_ = std::make_shared<WeakImpl>(data, size);
   }
 } // namespace misc

@@ -12,7 +12,7 @@ namespace storage
   using namespace boost::asio;
   using namespace boost::posix_time;
 
-  using copy = utils::shared_buffer::copy;
+  using copy = utils::SharedBuffer::copy;
 
   uint32_t Storage::id = 0;
 

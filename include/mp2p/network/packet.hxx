@@ -15,7 +15,7 @@ namespace network
   template <typename T>
   inline void
   Packet::add_message(const T* data, const masks::size_type size,
-                      misc::shared_buffer::copy to_copy)
+                      misc::SharedBuffer::copy to_copy)
   {
     add_message(masks::message_type{reinterpret_cast<const masks::CharT*>(data),
                                     size, to_copy});
@@ -54,6 +54,6 @@ namespace network
   inline masks::message_type
   empty_message(masks::size_type size)
   {
-    return misc::shared_buffer(size);
+    return misc::SharedBuffer(size);
   }
 } // namespace network

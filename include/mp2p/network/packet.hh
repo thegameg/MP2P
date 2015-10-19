@@ -14,7 +14,7 @@ namespace network
     using message_container = std::vector<masks::message_type>;
 
     // Create a packet with a pointer to data and a size.
-    // The data is copied to a shared_buffer
+    // The data is copied to a SharedBuffer
     Packet(masks::size_type size, masks::fromto_type fromto,
            masks::what_type what, const masks::CharT* data);
 
@@ -25,14 +25,14 @@ namespace network
     // going to stay valid during the usage of the packet
     Packet(masks::size_type size, masks::fromto_type fromto,
            masks::what_type what, const masks::CharT* data,
-           misc::shared_buffer::copy to_copy);
+           misc::SharedBuffer::copy to_copy);
 
-    // Create a packet with a message contained inside a shared_buffer
+    // Create a packet with a message contained inside a SharedBuffer
     Packet(masks::fromto_type fromto, masks::what_type what,
-           const misc::shared_buffer& message);
+           const misc::SharedBuffer& message);
 
     // Create a packet with a message contained inside a shared pointer.
-    // The shared_ptr is going to be passed to a shared_buffer.
+    // The shared_ptr is going to be passed to a SharedBuffer.
     Packet(masks::fromto_type fromto, masks::what_type what,
            std::vector<masks::CharT>&& data);
 
@@ -50,7 +50,7 @@ namespace network
     // If not, the data should remain valid during the usage of the packet
     template <typename T>
     void add_message(const T* data, const masks::size_type size,
-                     misc::shared_buffer::copy to_copy);
+                     misc::SharedBuffer::copy to_copy);
 
     // Add a message to the packet by copying the internal data
     // Equivalent to add_message(message.data(), message.size(), copy::Yes)

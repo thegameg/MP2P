@@ -10,6 +10,7 @@ namespace misc
   void
   check_system()
   {
+    // FIXME : Use boost asio to check.
     int sock = ::socket(PF_INET6, SOCK_STREAM, 0);
 
     if (sock == -1)

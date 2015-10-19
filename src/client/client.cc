@@ -13,7 +13,7 @@ namespace client
   using namespace network;
   using namespace network::masks;
   using namespace utils;
-  using copy = utils::shared_buffer::copy;
+  using copy = utils::SharedBuffer::copy;
 
   namespace
   {
