@@ -25,15 +25,39 @@ namespace files
     return file_.size();
   }
 
-  inline char*
+  inline File::raw_data_ptr
   File::data()
   {
     return file_.data();
   }
 
-  inline const char*
+  inline File::const_raw_data_ptr
   File::data() const
   {
     return file_.const_data();
+  }
+
+  inline File::iterator
+  File::begin()
+  {
+    return file_.begin();
+  }
+
+  inline File::const_iterator
+  File::begin() const
+  {
+    return file_.begin();
+  }
+
+  inline File::iterator
+  File::end()
+  {
+    return file_.end();
+  }
+
+  inline File::const_iterator
+  File::end() const
+  {
+    return file_.end();
   }
 } // namespace files

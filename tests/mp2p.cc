@@ -120,7 +120,7 @@ TEST_CASE("Files", "[libtools][files]")
   SECTION("Data")
   {
     REQUIRE(file.data() != nullptr);
-    REQUIRE(strncmp(file.data(), text.c_str(), text.size()) == 0);
+    REQUIRE(std::equal(file.begin(), file.end(), text.begin(), text.end()));
   }
 
   SECTION("Empty_file")

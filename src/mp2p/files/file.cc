@@ -47,6 +47,16 @@ namespace files
       }
       return part_size;
     }
+
+    // Setup tue params of a mapped_file
+    auto file_params(const std::string& filename, size_t size)
+    {
+      namespace b_ios = boost::iostreams;
+      b_ios::mapped_file_params params{filename};
+      params.flags = b_ios::mapped_file_base::readwrite;
+      params.new_file_size = size;
+      return params;
+    }
   }
 
   File::File(const std::string& filepath)
@@ -60,17 +70,10 @@ namespace files
 
   File::File(const std::string& filename, size_t size)
     : filepath_{filename}
+    , file_{file_params(filename, size)}
   {
-    boost::iostreams::mapped_file_params params{filename};
-    params.flags = boost::iostreams::mapped_file_base::readwrite;
-    params.new_file_size = size;
-
-    // Map the file
-    file_ = boost::iostreams::mapped_file{params};
-
     // Fix permissions added by boost::mapped_file.
     // 644 should be the right ones.
-
     using p = boost::filesystem::perms;
     auto permissions
       = p::owner_read | p::group_read | p::others_read | p::owner_write;
@@ -82,11 +85,11 @@ namespace files
   File
   File::create_empty_file(const std::string& filename, size_t size)
   {
-    return File{filename, size};
+    return {filename, size};
   }
 
   std::string
-  hash_buffer(const char* sbuff, size_t size)
+  hash_buffer(buffer_type sbuff, size_t size)
   {
     auto hash = hash_buffer_hex(sbuff, size);
 
@@ -100,11 +103,11 @@ namespace files
 
   // SHA-1 hash a buffer of bytes
   std::array<unsigned char, 20>
-  hash_buffer_hex(const char* sbuff, size_t size)
+  hash_buffer_hex(buffer_type sbuff, size_t size)
   {
     size_t parts = parts_for_hashing_size(size);
     size_t part_size = std::ceil((float)size / parts);
-    const unsigned char* buff = reinterpret_cast<const unsigned char*>(sbuff);
+    auto buff = reinterpret_cast<const unsigned char*>(sbuff);
     std::array<unsigned char, 20> hash;
 
     // Create a SHA_CTX to accumulate the hash
