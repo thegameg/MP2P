@@ -7,83 +7,48 @@ File transfer application using a custom protocol.
 
 # Details
 
-This project is divided into four different parts:
+This project is divided into three different applications:
 
-* The 'Storage' application
-* The 'Master' application
-* The 'Client' application
-* The 'Tools' library
-  * Network
-  * Files
-  * Utils
+* Storage
+* Master
+* Client
 
-The library implements functions for the MP2P protocol. It is using boost:asio for the networking part.
+They are all based on `libmp2p`.
 
-All the apps are using the 'tools' library for network communications and file
+The library implements functions for the MP2P protocol.
+It is using **Boost.Asio** for the networking part.
+
+All the apps are using the library for network communications and file
 manipulations.
 
-The project uses Couchbase as a Master-Master replication database system.
+The project uses **Couchbase** as a Master-Master replication database system.
 
 ## How to?
 
 ### Config files
 
-We provide some *.conf.example files in the config folder, you can configure
-them to set up your own settings.
-
-### The Master application
-
-```
-mkdir -p build && cd build; cmake ..; make master-release -j;
-```
-
-### The Storage application
-
-```
-mkdir -p build && cd build; cmake ..; make storage-release -j;
-```
-
-### The Client application
-
-```
-mkdir -p build && cd build; cmake ..; make client-release -j;
-```
+We provide some **\*.conf.example** files in the config folder,
+you can configure them to set up your own settings.
 
 ## Requirements
 
 * C++ >= 14
-* Boost >= 1.55
+* Boost >= 1.58
 * OpenSSL >= 1.0
 * libcouchbase == 2.4.8
 
 ## Details
 
 * The Master application is there to make a connection between all the clients
-and the storage. It will be making constant database updates/checks in order to
-ensure the integrity of the transfers.
+and the storage. It will be making continous database updates/checks in order
+to ensure the integrity of the transfers.
 
-* The Storage application is there to listen for packets
-and send/receive files.
-
-It listens both for ipv4 & ipv6 connections
-(see http://stackoverflow.com/a/1618259).
-
+* The Storage application is there to listen for packets and send/receive
+files.
 
 ## Tests
 
-We are using the [Catch](https://github.com/philsquared/Catch) unit test framework.
+We are using the [Catch](https://github.com/philsquared/Catch) unit test
+framework for our tests.
 
 `make check` will launch the unit tests.
-
-## How to configure .vimrc with Syntastic so that it detects header locations?
-
-In the src/ folder you will find a .syntastic_cpp_config file containing
-compile FLAGS. Here is what you have to add in your .vimrc config file to
-handle this configuration:
-
-```
-let g:syntastic_check_on_open = 1
-let g:syntastic_cpp_check_header = 1
-let g:syntastic_cpp_compiler = 'clang'
-let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
-```
