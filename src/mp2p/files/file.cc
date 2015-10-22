@@ -18,16 +18,17 @@
 
 namespace files
 {
+  namespace b_ios = boost::iostreams;
+  namespace b_fs = boost::filesystem;
+
   namespace // Anonymous namespace
   {
     // Get the number of parts for hashing a file
     size_t
     parts_for_hashing_size(size_t size)
     {
-      const size_t mb = 1000000; // 1 MB
-      if (size < mb)
-        return 1;
-      return size / mb;
+      const size_t mb = 1024 * 1024;
+      return size < mb ? 1 : size / mb;
     }
 
     // Get the size of a part when hashing a file.
@@ -35,13 +36,13 @@ namespace files
     size_t
     part_size_for_hashing_size(size_t size, size_t part_id)
     {
-      size_t parts = parts_for_hashing_size(size);
+      const size_t parts = parts_for_hashing_size(size);
       assert(part_id < parts);
 
-      size_t part_size = std::ceil((float)size / parts);
+      size_t part_size = std::ceil(static_cast<double>(size) / parts);
       if (part_id == (parts - 1))
       {
-        size_t offset = part_id * part_size;
+        const size_t offset = part_id * part_size;
         if ((offset + part_size) > size)
           part_size -= offset + part_size - size;
       }
@@ -49,66 +50,65 @@ namespace files
     }
 
     // Setup tue params of a mapped_file
-    auto file_params(const std::string& filename, size_t size)
+    auto file_params(const std::string& filepath, size_t size)
     {
-      namespace b_ios = boost::iostreams;
-      b_ios::mapped_file_params params{filename};
+      b_ios::mapped_file_params params{filepath};
       params.flags = b_ios::mapped_file_base::readwrite;
       params.new_file_size = size;
       return params;
     }
   }
 
-  File::File(const std::string& filepath)
-    : filepath_{filepath}
+  File::File(std::string filepath)
+    : filepath_{std::move(filepath)}
+    , file_{filepath_,
+            std::ios_base::binary | std::ios_base::in | std::ios_base::out,
+            b_fs::file_size(filepath_)}
   {
-    auto size = boost::filesystem::file_size(filepath);
-    file_ = boost::iostreams::mapped_file{
-      filepath_, std::ios_base::binary | std::ios_base::in | std::ios_base::out,
-      static_cast<unsigned int>(size)};
   }
 
-  File::File(const std::string& filename, size_t size)
-    : filepath_{filename}
-    , file_{file_params(filename, size)}
+  File::File(std::string filepath, size_t size)
+    : filepath_{std::move(filepath)}
+    , file_{file_params(filepath_, size)}
   {
     // Fix permissions added by boost::mapped_file.
     // 644 should be the right ones.
-    using p = boost::filesystem::perms;
-    auto permissions
+    using p = b_fs::perms;
+    const auto permissions
       = p::owner_read | p::group_read | p::others_read | p::owner_write;
 
     // Set the permissions
-    boost::filesystem::permissions(filename, permissions);
+    b_fs::permissions(filepath_, permissions);
   }
 
   File
-  File::create_empty_file(const std::string& filename, size_t size)
+  File::create_empty_file(std::string filepath, size_t size)
   {
-    return {filename, size};
+    return {std::move(filepath), size};
   }
 
   std::string
   hash_buffer(buffer_type sbuff, size_t size)
   {
-    auto hash = hash_buffer_hex(sbuff, size);
+    const auto hash = hash_buffer_hex(sbuff, size);
 
     // Create a string using the hash
     std::ostringstream result;
-    for (int i = 0; i < 20; ++i)
-      result << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+    for (auto i = 0; i < sha1_hash_size; ++i)
+      result << std::hex << std::setw(2) << std::setfill('0')
+             << static_cast<int>(hash[i]);
 
     return result.str();
   }
 
   // SHA-1 hash a buffer of bytes
-  std::array<unsigned char, 20>
+  std::array<sha1_hash_elt_type, sha1_hash_size>
   hash_buffer_hex(buffer_type sbuff, size_t size)
   {
-    size_t parts = parts_for_hashing_size(size);
-    size_t part_size = std::ceil((float)size / parts);
-    auto buff = reinterpret_cast<const unsigned char*>(sbuff);
-    std::array<unsigned char, 20> hash;
+    const auto parts = parts_for_hashing_size(size);
+    const size_t part_size = std::ceil(static_cast<float>(size) / parts);
+    const auto buff = reinterpret_cast<const sha1_hash_elt_type*>(sbuff);
+    std::array<sha1_hash_elt_type, sha1_hash_size> hash;
 
     // Create a SHA_CTX to accumulate the hash
     // SHA1 function needs the whole buffer to hash it
@@ -119,8 +119,8 @@ namespace files
     for (size_t i = 0; i < parts; ++i)
     {
       // hash a part, update the final one
-      size_t hash_size = part_size_for_hashing_size(size, i);
-      size_t offset = i * part_size;
+      const auto hash_size = part_size_for_hashing_size(size, i);
+      const auto offset = i * part_size;
       SHA1_Update(&context, buff + offset, hash_size);
     }
 
@@ -133,14 +133,12 @@ namespace files
   std::string
   hash_file(const File& file)
   {
-    return hash_buffer(file.data(),
-                       boost::filesystem::file_size(file.filepath_get()));
+    return hash_buffer(file.data(), b_fs::file_size(file.filepath_get()));
   }
 
-  std::array<unsigned char, 20>
+  std::array<sha1_hash_elt_type, sha1_hash_size>
   hash_file_hex(const File& file)
   {
-    return hash_buffer_hex(file.data(),
-                           boost::filesystem::file_size(file.filepath_get()));
+    return hash_buffer_hex(file.data(), b_fs::file_size(file.filepath_get()));
   }
 }

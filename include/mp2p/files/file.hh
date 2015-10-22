@@ -16,7 +16,7 @@ namespace files
     using const_raw_data_ptr = const void*;
 
     // Constructor for a file not hashed
-    File(const std::string& filepath);
+    File(std::string filepath);
 
     // Disable copying files
     File(const File& other) = delete;
@@ -45,7 +45,7 @@ namespace files
     const_iterator end() const;
 
     // Create an empty file with filename and a size
-    static File create_empty_file(const std::string& filename, size_t size);
+    static File create_empty_file(std::string filepath, size_t size);
 
   private:
     std::string filepath_;
@@ -53,7 +53,7 @@ namespace files
 
     // Private constructor for an empty file.
     // Should be used only for create_empty_file
-    File(const std::string& filepath, size_t size);
+    File(std::string filepath, size_t size);
   };
 
   constexpr size_t sha1_hash_size = 20;
