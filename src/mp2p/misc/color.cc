@@ -1,57 +1,60 @@
 #include <mp2p/misc/color.hh>
 
+#include <string>
+#include <iostream>
+
 namespace misc
 {
   namespace color
   {
-    static const std::string WHITE = "\033[0m";
-    static const std::string RED = "\033[91m";
-    static const std::string GREEN = "\033[92m";
-    static const std::string YELLOW = "\033[93m";
-    static const std::string BLUE = "\033[94m";
-    static const std::string PURPLE = "\033[95m";
-    static const std::string CYAN = "\033[96m";
+    static const std::string white_color_escape = "\033[0m";
+    static const std::string red_color_escape = "\033[91m";
+    static const std::string blue_color_escape = "\033[94m";
+    static const std::string cyan_color_escape = "\033[96m";
+    static const std::string green_color_escape = "\033[92m";
+    static const std::string yellow_color_escape = "\033[93m";
+    static const std::string purple_color_escape = "\033[95m";
 
     std::ostream&
     w(std::ostream& o)
     {
-      return o << WHITE;
+      return o << white_color_escape;
     }
 
     std::ostream&
     r(std::ostream& o)
     {
-      return o << RED;
+      return o << red_color_escape;
     }
 
     std::ostream&
     b(std::ostream& o)
     {
-      return o << BLUE;
+      return o << blue_color_escape;
     }
 
     std::ostream&
     c(std::ostream& o)
     {
-      return o << CYAN;
+      return o << cyan_color_escape;
     }
 
     std::ostream&
     g(std::ostream& o)
     {
-      return o << GREEN;
+      return o << green_color_escape;
     }
 
     std::ostream&
     y(std::ostream& o)
     {
-      return o << YELLOW;
+      return o << yellow_color_escape;
     }
 
     std::ostream&
     p(std::ostream& o)
     {
-      return o << PURPLE;
+      return o << purple_color_escape;
     }
   } // namespace color
 } // namespace misc
