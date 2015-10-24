@@ -11,13 +11,10 @@ namespace misc
    * It should be used to be copied around and shared between multiple objects
    * and operations.
    */
-  class SharedBuffer
+  template <typename CharT>
+  class BasicSharedBuffer
   {
   public:
-    // Keep it different from network::masks::CharT.
-    // This may be used elsewhere
-    using CharT = char;
-
     // The underlaying container type
     using container_type = std::vector<CharT>;
 
@@ -29,22 +26,22 @@ namespace misc
     };
 
     // Construct an empty buffer
-    explicit SharedBuffer(size_t size);
+    explicit BasicSharedBuffer(size_t size);
 
-    // Construct a SharedBuffer from a moved container
-    explicit SharedBuffer(container_type&& container);
+    // Construct a BasicSharedBuffer from a moved container
+    explicit BasicSharedBuffer(container_type&& container);
 
     // Construct a buffer by copying (or not) the data from a pointer to POD
     // If your data is going to be invalidated, copy::Yes should be used.
     // If you are sure that your data is going to stay valid,
     // avoid copying using copy::No
-    explicit SharedBuffer(CharT* data, size_t size, copy to_copy);
+    explicit BasicSharedBuffer(CharT* data, size_t size, copy to_copy);
 
     // Same, but using a const buffer.
-    explicit SharedBuffer(const CharT* data, size_t size, copy to_copy);
+    explicit BasicSharedBuffer(const CharT* data, size_t size, copy to_copy);
 
     // MutableBufferSequence requirements
-    // misc::SharedBuffer implements the MutableBufferSequence concept
+    // misc::BasicSharedBuffer implements the MutableBufferSequence concept
     // required by boost::asio, in order to be used as a buffer for send/recv
     // functions.
 
@@ -76,14 +73,20 @@ namespace misc
     // for sending data.
     operator boost::asio::const_buffer() const;
 
-    struct SharedBufferImpl; // Forward declaration
+    struct Impl; // Forward declaration
 
   private:
     // Pointer to the implementation of the buffer
     // It can be a strong implementation that owns the data
     // Or a weak implementation that only uses it
-    std::shared_ptr<SharedBufferImpl> impl_;
+    std::shared_ptr<Impl> impl_;
+
+    struct OwnerImpl;
+    struct WeakImpl;
   };
+
+  using SharedBuffer = BasicSharedBuffer<char>;
+  using WSharedBuffer = BasicSharedBuffer<wchar_t>;
 } // namespace misc
 
 #include <mp2p/misc/shared-buffer.hxx>

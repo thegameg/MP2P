@@ -1,54 +1,98 @@
 #pragma once
 
-#include "shared-buffer.hh"
-#include "shared-buffer-impl.hh"
+#include <mp2p/misc/shared-buffer.hh>
+#include <mp2p/misc/shared-buffer-impl.hh>
+
+#include <memory>
 
 namespace misc
 {
-  inline SharedBuffer::const_iterator
-  SharedBuffer::begin() const
+  namespace b_asio = boost::asio;
+
+  template <typename CharT>
+  BasicSharedBuffer<CharT>::BasicSharedBuffer(size_t size)
+    : impl_{std::make_shared<OwnerImpl>(size)}
+  {
+  }
+
+  template <typename CharT>
+  BasicSharedBuffer<CharT>::BasicSharedBuffer(container_type&& container)
+    : impl_{std::make_shared<OwnerImpl>(std::move(container))}
+  {
+  }
+
+  template <typename CharT>
+  BasicSharedBuffer<CharT>::BasicSharedBuffer(CharT* data, size_t size,
+                                              copy to_copy)
+  {
+    if (to_copy == copy::Yes)
+      impl_ = std::make_shared<OwnerImpl>(data, size);
+    else
+      impl_ = std::make_shared<WeakImpl>(data, size);
+  }
+
+  template <typename CharT>
+  BasicSharedBuffer<CharT>::BasicSharedBuffer(const CharT* data, size_t size,
+                                              copy to_copy)
+  {
+    if (to_copy == copy::Yes)
+      impl_ = std::make_shared<OwnerImpl>(data, size);
+    else
+      impl_ = std::make_shared<WeakImpl>(data, size);
+  }
+
+  template <typename CharT>
+  inline typename BasicSharedBuffer<CharT>::const_iterator
+  BasicSharedBuffer<CharT>::begin() const
   {
     return &impl_->buf_;
   }
 
-  inline SharedBuffer::const_iterator
-  SharedBuffer::end() const
+  template <typename CharT>
+  inline typename BasicSharedBuffer<CharT>::const_iterator
+  BasicSharedBuffer<CharT>::end() const
   {
     return &impl_->buf_ + 1;
   }
 
-  inline SharedBuffer::CharT*
-  SharedBuffer::data()
+  template <typename CharT>
+  inline CharT*
+  BasicSharedBuffer<CharT>::data()
   {
-    return boost::asio::buffer_cast<SharedBuffer::CharT*>(impl_->buf_);
+    return b_asio::buffer_cast<CharT*>(impl_->buf_);
   }
 
-  inline const SharedBuffer::CharT*
-  SharedBuffer::data() const
+  template <typename CharT>
+  inline const CharT*
+  BasicSharedBuffer<CharT>::data() const
   {
-    return boost::asio::buffer_cast<const SharedBuffer::CharT*>(impl_->buf_);
+    return b_asio::buffer_cast<const CharT*>(impl_->buf_);
   }
 
-  inline const SharedBuffer::value_type
-  SharedBuffer::buffer_get() const
+  template <typename CharT>
+  inline const typename BasicSharedBuffer<CharT>::value_type
+  BasicSharedBuffer<CharT>::buffer_get() const
   {
     return impl_->buf_;
   }
 
+  template <typename CharT>
   inline size_t
-  SharedBuffer::size() const
+  BasicSharedBuffer<CharT>::size() const
   {
-    return boost::asio::buffer_size(impl_->buf_);
+    return b_asio::buffer_size(impl_->buf_);
   }
 
+  template <typename CharT>
   inline const std::string
-  SharedBuffer::string_get() const
+  BasicSharedBuffer<CharT>::string_get() const
   {
     return std::string(data(), data() + size());
   }
 
-  inline SharedBuffer::operator boost::asio::const_buffer() const
+  template <typename CharT>
+  inline BasicSharedBuffer<CharT>::operator b_asio::const_buffer() const
   {
-    return boost::asio::const_buffer(impl_->buf_);
+    return b_asio::const_buffer(impl_->buf_);
   }
 } // namespace misc

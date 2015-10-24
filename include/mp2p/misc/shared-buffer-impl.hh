@@ -5,55 +5,60 @@
 namespace misc
 {
   // The abstract structure of the implementation
-  // This allows the implementation of the SharedBuffer to be chosen
-  // at runtime, without having empty containers and null pointers
+  // This allows the implementation of the BasicSharedBuffer<CharT> to be
+  // chosen at runtime, without having empty containers and null pointers
   // wandering around.
-  struct SharedBuffer::SharedBufferImpl
+  namespace b_asio = boost::asio;
+
+  template <typename CharT>
+  struct BasicSharedBuffer<CharT>::Impl
   {
-    using CharT = SharedBuffer::CharT;
-    using container_type = SharedBuffer::container_type;
+    using container_type = BasicSharedBuffer<CharT>::container_type;
 
-    SharedBufferImpl() = default;
+    Impl() = default;
 
-    SharedBufferImpl(const boost::asio::mutable_buffer& buf)
+    Impl(const b_asio::mutable_buffer& buf)
       : buf_{buf}
     {
     }
 
-    virtual ~SharedBufferImpl() = default;
+    virtual ~Impl() = default;
 
-    // Mutable buffer used to interact with boost::asio
-    boost::asio::mutable_buffer buf_;
+    // Mutable buffer used to interact with b_asio
+    b_asio::mutable_buffer buf_;
   };
 
   // The owning implementation copies the data to an internal container
   // It's used to keep data alive accross function calls
-  struct OwnerImpl : SharedBuffer::SharedBufferImpl
+  template <typename CharT>
+  struct BasicSharedBuffer<CharT>::OwnerImpl
+    : public BasicSharedBuffer<CharT>::Impl
   {
-    using super_type = SharedBufferImpl;
+    using super_type = typename BasicSharedBuffer<CharT>::Impl;
+    using container_type = typename super_type::container_type;
 
     // Copy the data in the container
-    OwnerImpl(const super_type::CharT* data, size_t size)
+    OwnerImpl(const CharT* data, size_t size)
       : data_{data, data + size}
     {
-      buf_ = boost::asio::mutable_buffer{data_.data(), data_.size()};
+      super_type::buf_ = b_asio::mutable_buffer{data_.data(), data_.size()};
     }
 
     OwnerImpl(size_t size)
       : data_(size, '\0')
     {
-      buf_ = boost::asio::mutable_buffer{data_.data(), data_.size()};
+      super_type::buf_ = b_asio::mutable_buffer{data_.data(), data_.size()};
     }
 
-    OwnerImpl(super_type::container_type&& container)
+    OwnerImpl(container_type&& container)
       : data_{std::move(container)}
     {
     }
 
-    OwnerImpl(size_t size, super_type::CharT default_char)
+    OwnerImpl(size_t size, CharT default_char)
       : data_(size, default_char)
     {
-      buf_ = boost::asio::mutable_buffer{data_.data(), data_.size()};
+      super_type::buf_ = b_asio::mutable_buffer{data_.data(), data_.size()};
     }
 
     // Underlaying container
@@ -62,13 +67,15 @@ namespace misc
 
   // The weak implementation gives the ownership to the constructor
   // of the data
-  struct WeakImpl : SharedBuffer::SharedBufferImpl
+  template <typename CharT>
+  struct BasicSharedBuffer<CharT>::WeakImpl
+    : public BasicSharedBuffer<CharT>::Impl
   {
-    using super_type = SharedBufferImpl;
+    using super_type = typename BasicSharedBuffer<CharT>::Impl;
+    using container_type = typename super_type::container_type;
 
-    WeakImpl(const super_type::CharT* data, size_t size)
-      : super_type{boost::asio::mutable_buffer(
-          const_cast<super_type::CharT*>(data), size)}
+    WeakImpl(const CharT* data, size_t size)
+      : super_type{b_asio::mutable_buffer(const_cast<CharT*>(data), size)}
     {
     }
   };
