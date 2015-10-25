@@ -5,9 +5,7 @@
 
 namespace network
 {
-  using namespace boost::asio;
   using namespace network::masks;
-
   using copy = misc::SharedBuffer::copy;
 
   Packet::Packet(size_type size, fromto_type fromto, what_type what,
