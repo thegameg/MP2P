@@ -29,4 +29,5 @@ namespace network
   class Packet;
 
   using dispatcher_type = std::function<keep_alive(Packet, Session&)>;
+  using port_type = uint16_t;
 } // namespace network

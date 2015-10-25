@@ -11,20 +11,10 @@ namespace network
   public:
     // Create a server binding addr:port using io_service.
     // Callback dispatcher after a recieve
-    Server(boost::asio::ip::address_v6 addr, uint16_t port,
+    Server(boost::asio::ip::address_v6 addr, port_type port,
            boost::asio::io_service& io_service, dispatcher_type dispatcher);
 
-    // Stop the acceptor
-    // FIXME : Is this really necessary? What about RAII?
-    ~Server();
-
-    // Listen asynchronously for new connections
-    void listen();
-
-    // Stop the acceptor
-    // FIXME : Is this really necessary? What about RAII?
-    void stop();
-
+    // Check if the server is running and accepting new connections
     bool is_running() const;
 
   private:
@@ -36,5 +26,10 @@ namespace network
 
     // The recieve callback
     dispatcher_type dispatcher_;
+
+    // Listen asynchronously for new connections
+    void listen();
   };
 } // namespace network
+
+#include <mp2p/network/server.hxx>
